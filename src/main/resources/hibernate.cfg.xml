@@ -8,7 +8,7 @@
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.url">jdbc:mysql://localhost:3306/moviesrental?serverTimezone=UTC</property>
         <property name="connection.username">root</property>
-        <property name="connection.password">92eH.2815</property>
+        <property name="connection.password">passsword</property>
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">5</property>
         <property name="hibernate.connection.characterEncoding">UTF-8</property>
