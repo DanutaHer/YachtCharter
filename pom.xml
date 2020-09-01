@@ -24,6 +24,7 @@
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -40,6 +41,12 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.4.20.Final</version>
         </dependency>
+        <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>5.4.21.Final</version>
+        <type>pom</type>
+    </dependency>
     </dependencies>
 
 
