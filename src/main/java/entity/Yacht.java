@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Yacht {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column (name = "yacht_id")
     private Long yachtId;
 
