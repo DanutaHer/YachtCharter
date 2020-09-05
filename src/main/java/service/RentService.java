@@ -46,9 +46,9 @@ public class RentService {
             Long yachtId = scanner.nextLong();
             rent.setYachtId(yachtId);
 
-            int query = em.createQuery("SELECT r.rentId FROM Rent r WHERE r.yachtId =" + rent.getYachtId() + " and r.rentedFrom >= '"
-                    + rent.getRentedFrom() + "' and r.rentedTo <= ' " + rent.getRentedTo() + "'").getMaxResults();
-
+            int query = em.createQuery("SELECT r.rentId FROM Rent r WHERE r.yachtId =" + rent.getYachtId() + " and r.rentedFrom >= date("
+                    + rent.getRentedFrom() + ") and r.rentedTo <= date( " + rent.getRentedTo() + ")").getFirstResult();
+            try {
                 if (query != 0) {
                     System.out.println("Term not available");
                     em.getTransaction().commit();
@@ -56,9 +56,14 @@ public class RentService {
                 } else
 
                     rent.setCustomerId(customer.getCustomerId());
-                    em.persist(rent);
-                    em.getTransaction().commit();
-                    System.out.println("Rent added");
+                em.persist(rent);
+                em.getTransaction().commit();
+                System.out.println("Rent added");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                em.close();
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -109,32 +114,36 @@ public class RentService {
             Long newYachtId = scanner.nextLong();
             rent.setYachtId(newYachtId);
 
-            System.out.println("New rent from: yyyy-mm-dd");
-            String newRentFrom = scanner.nextLine();
-            String[] newRentFrom2 = newRentFrom.split("-");
-            int cos1 = Integer.decode(newRentFrom2[0]);
-            int cos2 = Integer.decode(newRentFrom2[1]);
-            int cos3 = Integer.decode(newRentFrom2[2]);
+            System.out.println("Give rented year of rented from");
+            int year = scanner.nextInt();
+            System.out.println("Give rented month of rented from");
+            int month = scanner.nextInt();
+            System.out.println("Give rented day of rented from");
+            int day = scanner.nextInt();
+            rent.setRentedFrom(LocalDate.of(year, month, day));
 
-            rent.setRentedFrom(LocalDate.of(cos1, cos2, cos3));
+            System.out.println("Give rented year of rented to");
+            int year2 = scanner.nextInt();
+            System.out.println("Give rented month of rented to");
+            int month2 = scanner.nextInt();
+            System.out.println("Give rented day of rented to");
+            int day2 = scanner.nextInt();
+            rent.setRentedTo(LocalDate.of(year2, month2, day2));
 
-            System.out.println("New rent from: yyyy-mm-dd");
-            String newRentTo = scanner.nextLine();
-            String[] newRentTo2 = newRentTo.split("-");
-            int co1 = Integer.decode(newRentTo2[0]);
-            int co2 = Integer.decode(newRentTo2[1]);
-            int co3 = Integer.decode(newRentTo2[2]);
+            int query = em.createQuery("SELECT r.rentId FROM Rent r WHERE r.yachtId =" + rent.getYachtId() + " and r.rentedFrom >= '"
+                    + rent.getRentedFrom() + "' and r.rentedTo <= ' " + rent.getRentedTo() + "'").getFirstResult();
 
-            rent.setRentedTo(LocalDate.of(co1, co2, co3));
+            if (query != 0) {
+                System.out.println("Term not available");
+                et.commit();
+                em.close();
+            } else
 
-            em.persist(rent);
+                em.persist(rent);
             et.commit();
             System.out.println("Changes saved");
 
         } catch (Exception ex) {
-            if (et != null) {
-                et.rollback();
-            }
             ex.printStackTrace();
         } finally {
             em.close();
