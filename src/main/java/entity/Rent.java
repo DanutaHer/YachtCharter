@@ -1,16 +1,19 @@
 package entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
+/**
+ * Represents a model of a Customer
+ * @author Danuta Hering
+ */
+
 @Entity
+@Table(name = "rents")
 public class Rent {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rent_id")
     private Long rentId;
 
