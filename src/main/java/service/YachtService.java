@@ -1,20 +1,21 @@
 package service;
 
 import entity.Yacht;
+import util.PersistenceManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 /**
  * Represents yacht service
+ *
  * @author Marta Polcyn
  */
 
 public class YachtService {
 
-    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("yachts");
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityManagerFactory emf = PersistenceManager.getInstance().getEntityManagerFactory();
+    EntityManager em = emf.createEntityManager();
 
     /**
      * This method adds a new yacht item to yachts table
@@ -22,18 +23,21 @@ public class YachtService {
      */
     public void addYacht() {
 
-            entityManager.getTransaction().begin();
-
+        try {
+            em.getTransaction().begin();
             Yacht yacht = new Yacht();
             yacht.setModelId(3L);
-
-            entityManager.persist(yacht);
-            entityManager.getTransaction().commit();
-
+            em.persist(yacht);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            em.close();
+        }
     }
 
 
     public Yacht findYacht(Long id) {
-        return entityManager.find(Yacht.class, id);
+        return em.find(Yacht.class, id);
     }
 }
