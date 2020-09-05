@@ -46,24 +46,20 @@ public class RentService {
             Long yachtId = scanner.nextLong();
             rent.setYachtId(yachtId);
 
+            int query = em.createQuery("SELECT r.rentId FROM Rent r WHERE r.yachtId =" + rent.getYachtId() + " and r.rentedFrom >= '"
+                    + rent.getRentedFrom() + "' and r.rentedTo <= ' " + rent.getRentedTo() + "'").getMaxResults();
 
-            String findQuery = "SELECT rent_id FROM \n" +
-                    "rents \n" +
-                    "WHERE yacht_id = :yachtId and rented_from >=':rentedFrom' and rented_to <= ':rentedTo'";
+                if (query != 0) {
+                    System.out.println("Term not available");
+                    em.getTransaction().commit();
+                    em.close();
+                } else
 
-            Query query = em.createQuery(findQuery);
-            query.getFirstResult();
+                    rent.setCustomerId(customer.getCustomerId());
+                    em.persist(rent);
+                    em.getTransaction().commit();
+                    System.out.println("Rent added");
 
-            if (query.getFirstResult() != 0) {
-                System.out.println("Cannot be saved");
-            } else {
-
-                rent.setCustomerId(customer.getCustomerId());
-
-                em.persist(rent);
-                em.getTransaction().commit();
-                System.out.println("Rent added");
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -116,18 +112,18 @@ public class RentService {
             System.out.println("New rent from: yyyy-mm-dd");
             String newRentFrom = scanner.nextLine();
             String[] newRentFrom2 = newRentFrom.split("-");
-            int cos1 = Integer.decode(newRentFrom2 [0]);
-            int cos2 = Integer.decode(newRentFrom2 [1]);
-            int cos3 = Integer.decode(newRentFrom2 [2]);
+            int cos1 = Integer.decode(newRentFrom2[0]);
+            int cos2 = Integer.decode(newRentFrom2[1]);
+            int cos3 = Integer.decode(newRentFrom2[2]);
 
             rent.setRentedFrom(LocalDate.of(cos1, cos2, cos3));
 
             System.out.println("New rent from: yyyy-mm-dd");
             String newRentTo = scanner.nextLine();
-            String[] newRentTo2 = newRentFrom.split("-");
-            int co1 = Integer.decode(newRentTo2 [0]);
-            int co2 = Integer.decode(newRentTo2 [1]);
-            int co3 = Integer.decode(newRentTo2 [2]);
+            String[] newRentTo2 = newRentTo.split("-");
+            int co1 = Integer.decode(newRentTo2[0]);
+            int co2 = Integer.decode(newRentTo2[1]);
+            int co3 = Integer.decode(newRentTo2[2]);
 
             rent.setRentedTo(LocalDate.of(co1, co2, co3));
 
@@ -171,18 +167,5 @@ public class RentService {
         }
 
     }
-
-//    public static void query(Long yachtId, LocalDate rentedFrom, LocalDate rentedTo, EntityManager em) {
-//        EntityTransaction et = null;
-//        et = em.getTransaction();
-//        et.begin();
-//
-//        String findQuery = "SELECT * FROM \n" +
-//                "rents \n" +
-//                "WHERE yacht_id = :yachtId and rented_from >=':rentedFrom' and rented_to <= ':rentedTo';";
-//
-//        Query query = em.createQuery(findQuery);
-//        em.close();
-//    }
 
 }
