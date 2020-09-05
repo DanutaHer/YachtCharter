@@ -114,10 +114,23 @@ public class RentService {
             Long newYachtId = scanner.nextLong();
             rent.setYachtId(newYachtId);
 
-            System.out.println("New rent from:");
+            System.out.println("New rent from: yyyy-mm-dd");
             String newRentFrom = scanner.nextLine();
+            String[] newRentFrom2 = newRentFrom.split("-");
+            int cos1 = Integer.decode(newRentFrom2 [0]);
+            int cos2 = Integer.decode(newRentFrom2 [1]);
+            int cos3 = Integer.decode(newRentFrom2 [2]);
 
-            //rent.setRentedFrom();
+            rent.setRentedFrom(LocalDate.of(cos1, cos2, cos3));
+
+            System.out.println("New rent from: yyyy-mm-dd");
+            String newRentTo = scanner.nextLine();
+            String[] newRentTo2 = newRentFrom.split("-");
+            int co1 = Integer.decode(newRentTo2 [0]);
+            int co2 = Integer.decode(newRentTo2 [1]);
+            int co3 = Integer.decode(newRentTo2 [2]);
+
+            rent.setRentedTo(LocalDate.of(co1, co2, co3));
 
             em.persist(rent);
             et.commit();
