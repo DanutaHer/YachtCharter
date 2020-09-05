@@ -17,7 +17,7 @@
             <property name="javax.persistence.jdbc.url"
                       value="jdbc:mysql://localhost:3306/yachtcharter?serverTimezone=UTC"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
-            <property name="javax.persistence.jdbc.password" value="chujwmaslo"/>
+            <property name="javax.persistence.jdbc.password" value="92eH.2815"/>
             <property name="hibernate.connection.characterEncoding" value="UTF-8" />
             <property name="hibernate.show_sql" value="true" />
         </properties>

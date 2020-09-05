@@ -1,4 +1,5 @@
 import service.CustomerService;
+import service.RentService;
 import service.YachtService;
 
 import java.util.Scanner;
@@ -96,6 +97,8 @@ public class Main {
     }
 
     private static void printMenuForCustomerOperations() {
+
+        CustomerService customerService = new CustomerService();
         System.out.println("=====================================");
         System.out.println("These are avaiable for a customer:");
         System.out.println("1 - to add a new customer");
@@ -108,22 +111,22 @@ public class Main {
             switch (scanner.next()) {
                 case "1":
                     System.out.println("Will add a customer");
-                    CustomerService.addCustomer();
+                    customerService.addCustomer();
                     printMenu();
                     break;
                 case "2":
                     System.out.println("Will display data for a chosen customer");
-                    // CustomerService.find();
+                    customerService.getCustomer();
                     printMenu();
                     break;
                 case "3":
                     System.out.println("Will update a customer");
-                    // CustomerService.edit();
+                    customerService.editCustomer();
                     printMenu();
                     break;
                 case "4":
                     System.out.println("Will remove a customer");
-                    // CustomerService.delete();
+                    customerService.deleteCustomer();
                     printMenu();
                     break;
                 case "0":
@@ -139,6 +142,8 @@ public class Main {
     }
 
     private static void printMenuForRentOperations() {
+
+        RentService rentService = new RentService();
         System.out.println("========================");
         System.out.println("Are you looking for:");
         System.out.println("1 - to make a reservation");
@@ -151,22 +156,22 @@ public class Main {
             switch (scanner.next()) {
                 case "1":
                     System.out.println("Will make a reservation");
-                    // RentService.add();
+                    rentService.addRent();
                     printMenu();
                     break;
                 case "2":
                     System.out.println("Will find a reservation");
-                    // RentService.find(); // by customer, by id, by yacht, by date....
+                    rentService.getRent();
                     printMenu();
                     break;
                 case "3":
                     System.out.println("Will change a reservation");
-                    // RentService.edit();
+                    rentService.editRent();
                     printMenu();
                     break;
                 case "4":
                     System.out.println("Will cancel a reservation");
-                    // RentService.delete();
+                    rentService.deleteRent();
                     printMenu();
                     break;
                 case "0":

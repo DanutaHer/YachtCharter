@@ -10,6 +10,7 @@ import java.time.LocalDate;
  */
 
 @Entity
+@Table(name = "rents")
 public class Rent {
 
     @Id
