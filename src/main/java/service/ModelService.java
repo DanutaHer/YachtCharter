@@ -1,51 +1,79 @@
 package service;
 
 import entity.Model;
+import entity.Yacht;
+import util.PersistenceManager;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Represents model service
+ *
  * @author Marta Polcyn
  */
 
 public class ModelService {
 
-    protected EntityManager entityManager;
-
-    public ModelService(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
 
     /**
      * This method adds a new yacht model to models table
      */
-    public void addModel() {
+    public void addModel(String description) {
 
-        entityManager.getTransaction().begin();
+        try {
 
-        Model model = new Model();
-        model.setModelDescription("Antila 33");
-        model.setPricePerDay(BigDecimal.valueOf(1000));
-        model.setPricePerWeek(BigDecimal.valueOf(5000));
-        model.setBunkCount(10);
+            em.getTransaction().begin();
+            Model model = new Model();
+            model.setModelDescription(description);
 
-        entityManager.persist(model);
-        entityManager.getTransaction().commit();
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Price per day?");
+
+            model.setPricePerDay(BigDecimal.valueOf(Integer.parseInt(sc.nextLine())));
+            System.out.println("Price per week?");
+            model.setPricePerWeek(BigDecimal.valueOf(Integer.parseInt(sc.nextLine())));
+
+            System.out.println("How many places to sleep?");
+            model.setBunkCount(Integer.parseInt(sc.nextLine()));
+
+            em.persist(model);
+            em.getTransaction().commit();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+//            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
 
     }
 
+    public List<Model> findModel(String name) {
+        EntityTransaction et = null;
+        List<Model> models = new ArrayList<>();
+        try {
+            models =  em.createQuery(
+                    "SELECT m FROM models AS m WHERE model_desc LIKE :model_desc")
+                    .setParameter("model_desc", name.toLowerCase())
+                    .getResultList();
+        } catch (Exception e) {
+            if (et != null) {
+                et.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return models;
+    }
+
+
     public Model findModel(Long id) {
-
-        Model model = (Model) entityManager
-                .createQuery("SELECT * FROM TABLE models WHERE model.model_desc = :model_desc")
-                .setParameter("model_desc", "KEY1")
-                .getSingleResult();
-
-
-        return entityManager.find(Model.class, id);
+        return em.find(Model.class, id);
     }
 }

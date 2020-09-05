@@ -1,7 +1,9 @@
+import entity.Yacht;
 import service.CustomerService;
-import service.RentService;
+import service.ModelService;
 import service.YachtService;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,6 +18,7 @@ public class Main {
     final static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+
         printMenu();
     }
 
@@ -29,7 +32,7 @@ public class Main {
         System.out.println("0 - to end the program");
 
         if (scanner.hasNext()) {
-            switch (scanner.next()) {
+            switch (scanner.nextLine()) {
                 case "1":
                     printMenuForRentOperations();
                     break;
@@ -53,6 +56,7 @@ public class Main {
     private static void printMenuForYachtOperations() {
 
         YachtService yachtService = new YachtService();
+        ModelService modelService = new ModelService();
 
         System.out.println("================================");
         System.out.println("These are avaiable for a yacht:");
@@ -63,7 +67,7 @@ public class Main {
         System.out.println("0 - to go back to the main menu");
 
         if (scanner.hasNext()) {
-            switch (scanner.next()) {
+            switch (scanner.nextLine()) {
                 case "1":
                     System.out.println("Will add a yacht");
                     yachtService.addYacht();
@@ -71,7 +75,11 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("Will find a yacht");
-                    // YachtService.find();
+                    System.out.println("Name: ");
+                    String name = scanner.nextLine();
+                    List<Yacht> yachts = yachtService.findYacht(name);
+                    System.out.println("I found " + yachts.size() + " yachts ot this model");
+                    System.out.println(modelService.findModel(name).get(0).toString());
                     printMenu();
                     break;
                 case "3":
@@ -97,8 +105,6 @@ public class Main {
     }
 
     private static void printMenuForCustomerOperations() {
-
-        CustomerService customerService = new CustomerService();
         System.out.println("=====================================");
         System.out.println("These are avaiable for a customer:");
         System.out.println("1 - to add a new customer");
@@ -107,8 +113,10 @@ public class Main {
         System.out.println("4 - to remove a customer because he did not sign RODO");
         System.out.println("0 - to go back to the main menu");
 
+        CustomerService customerService = new CustomerService();
+
         if (scanner.hasNext()) {
-            switch (scanner.next()) {
+            switch (scanner.nextLine()) {
                 case "1":
                     System.out.println("Will add a customer");
                     customerService.addCustomer();
@@ -116,17 +124,17 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("Will display data for a chosen customer");
-                    customerService.getCustomer();
+                    // CustomerService.find();
                     printMenu();
                     break;
                 case "3":
                     System.out.println("Will update a customer");
-                    customerService.editCustomer();
+                    // CustomerService.edit();
                     printMenu();
                     break;
                 case "4":
                     System.out.println("Will remove a customer");
-                    customerService.deleteCustomer();
+                    // CustomerService.delete();
                     printMenu();
                     break;
                 case "0":
@@ -142,8 +150,6 @@ public class Main {
     }
 
     private static void printMenuForRentOperations() {
-
-        RentService rentService = new RentService();
         System.out.println("========================");
         System.out.println("Are you looking for:");
         System.out.println("1 - to make a reservation");
@@ -153,25 +159,25 @@ public class Main {
         System.out.println("0 - to go back to the main menu");
 
         if (scanner.hasNext()) {
-            switch (scanner.next()) {
+            switch (scanner.nextLine()) {
                 case "1":
                     System.out.println("Will make a reservation");
-                    rentService.addRent();
+                    // RentService.add();
                     printMenu();
                     break;
                 case "2":
                     System.out.println("Will find a reservation");
-                    rentService.getRent();
+                    // RentService.find(); // by customer, by id, by yacht, by date....
                     printMenu();
                     break;
                 case "3":
                     System.out.println("Will change a reservation");
-                    rentService.editRent();
+                    // RentService.edit();
                     printMenu();
                     break;
                 case "4":
                     System.out.println("Will cancel a reservation");
-                    rentService.deleteRent();
+                    // RentService.delete();
                     printMenu();
                     break;
                 case "0":

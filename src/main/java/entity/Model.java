@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class Model {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column (name = "model_id")
     private Long modelId;
 
@@ -66,5 +66,16 @@ public class Model {
 
     public void setBunkCount(int bunkCount) {
         this.bunkCount = bunkCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "modelId=" + modelId +
+                ", modelDescription='" + modelDescription + '\'' +
+                ", pricePerDay=" + pricePerDay +
+                ", pricePerWeek=" + pricePerWeek +
+                ", bunkCount=" + bunkCount +
+                '}';
     }
 }
