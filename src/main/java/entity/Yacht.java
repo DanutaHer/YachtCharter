@@ -11,12 +11,12 @@ import javax.persistence.*;
 public class Yacht {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column (name = "yacht_id")
     private Long yachtId;
 
     @Column (name = "model_id")
-    @ManyToOne
+//    @OneToMany
     private Long modelId;
 
     public Long getYachtId() {

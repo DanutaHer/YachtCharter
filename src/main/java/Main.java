@@ -1,3 +1,6 @@
+import service.CustomerService;
+import service.YachtService;
+
 import java.util.Scanner;
 
 /**
@@ -47,6 +50,9 @@ public class Main {
     }
 
     private static void printMenuForYachtOperations() {
+
+        YachtService yachtService = new YachtService();
+
         System.out.println("================================");
         System.out.println("These are avaiable for a yacht:");
         System.out.println("1 - to add a new yacht you just bought");
@@ -59,7 +65,7 @@ public class Main {
             switch (scanner.next()) {
                 case "1":
                     System.out.println("Will add a yacht");
-                    // YachtService.add();
+                    yachtService.addYacht();
                     printMenu();
                     break;
                 case "2":
@@ -102,7 +108,7 @@ public class Main {
             switch (scanner.next()) {
                 case "1":
                     System.out.println("Will add a customer");
-                    // CustomerService.add();
+                    CustomerService.addCustomer();
                     printMenu();
                     break;
                 case "2":
