@@ -2,71 +2,64 @@ package service;
 
 import entity.Customer;
 import entity.Rent;
+import util.PersistenceManager;
 
 import javax.persistence.*;
+
 import java.time.LocalDate;
+
 import java.util.*;
 
 public class RentService {
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY2 = Persistence.createEntityManagerFactory("yachtcharter");
-
-    private EntityManager em = ENTITY_MANAGER_FACTORY2.createEntityManager();
+    EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
+    Scanner scanner = new Scanner(System.in);
+    Rent rent = new Rent();
+    Customer customer = null;
 
     public void addRent() {
 
+        System.out.println("Give rented from yyyy-mm-dd");
+        String rentedFrom = scanner.nextLine();
+        LocalDate localDate = LocalDate.parse(rentedFrom);
+        System.out.println("Give rented to yyyy-mm-dd");
+        String rentedTo = scanner.nextLine();
+        LocalDate localDate2 = LocalDate.parse(rentedTo);
+        System.out.println("Give yacht id");
+        Long yachtId = scanner.nextLong();
+
         try {
-            em.getTransaction().begin();
-            Rent rent = new Rent();
-            Customer customer = null;
 
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Give customer id");
-            Long customerId = scanner.nextLong();
+            List<Rent> rents = em.createQuery("SELECT r FROM Rent r WHERE r.yachtId =:yachtId and r.rentedFrom >= :rentedFrom and r.rentedTo <= :rentedTo", Rent.class)
+                    .setParameter("yachtId", yachtId)
+                    .setParameter("rentedFrom", localDate)
+                    .setParameter("rentedTo", localDate2)
+                    .getResultList();
 
-            customer = em.find(Customer.class, customerId);
-            System.out.println(customer.getCustomerId() + ", " + customer.getName() + ", " + customer.getPhone() + ", " + customer.getEmail() + ", " + customer.getAddress());
+            if (rents.isEmpty()) {
 
-            System.out.println("Give rented year of rented from");
-            int year = scanner.nextInt();
-            System.out.println("Give rented month of rented from");
-            int month = scanner.nextInt();
-            System.out.println("Give rented day of rented from");
-            int day = scanner.nextInt();
-            rent.setRentedFrom(LocalDate.of(year, month, day));
+                em.getTransaction().begin();
+                rent.setRentedFrom(localDate);
+                rent.setRentedTo(localDate2);
+                rent.setYachtId(yachtId);
 
-            System.out.println("Give rented year of rented to");
-            int year2 = scanner.nextInt();
-            System.out.println("Give rented month of rented to");
-            int month2 = scanner.nextInt();
-            System.out.println("Give rented day of rented to");
-            int day2 = scanner.nextInt();
-            rent.setRentedTo(LocalDate.of(year2, month2, day2));
+                System.out.println("Give customer id");
+                Long customerId = scanner.nextLong();
+                customer = em.find(Customer.class, customerId);
+                System.out.println(customer.getCustomerId() + ", " + customer.getName() + ", " + customer.getPhone() + ", " + customer.getEmail() + ", " + customer.getAddress());
+                rent.setCustomerId(customer.getCustomerId());
 
-            System.out.println("Give yacht id");
-            Long yachtId = scanner.nextLong();
-            rent.setYachtId(yachtId);
-
-            int query = em.createQuery("SELECT r.rentId FROM Rent r WHERE r.yachtId =" + rent.getYachtId() + " and r.rentedFrom >= date("
-                    + rent.getRentedFrom() + ") and r.rentedTo <= date( " + rent.getRentedTo() + ")").getFirstResult();
-            try {
-                if (query != 0) {
-                    System.out.println("Term not available");
-                    em.getTransaction().commit();
-                    em.close();
-                } else
-
-                    rent.setCustomerId(customer.getCustomerId());
                 em.persist(rent);
                 em.getTransaction().commit();
                 System.out.println("Rent added");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                em.close();
-            }
 
+            } else {
+                RentService rentService = new RentService();
+                System.out.println("Deadline not available, give new parameters");
+                rentService.addRent();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
+
         } finally {
             em.close();
         }
@@ -75,10 +68,8 @@ public class RentService {
     public void getRent() {
 
         EntityTransaction et = null;
-        Rent rent = null;
 
         try {
-            Scanner scanner = new Scanner(System.in);
             System.out.println("Give rent id number:");
             Long rentId = scanner.nextLong();
 
@@ -98,50 +89,43 @@ public class RentService {
     public void editRent() {
 
         EntityTransaction et = null;
-        Rent rent = null;
+
+        System.out.println("Give rented from yyyy-mm-dd");
+        String rentedFrom = scanner.nextLine();
+        LocalDate localDate = LocalDate.parse(rentedFrom);
+        System.out.println("Give rented to yyyy-mm-dd");
+        String rentedTo = scanner.nextLine();
+        LocalDate localDate2 = LocalDate.parse(rentedTo);
+        System.out.println("Give yacht id");
+        Long yachtId = scanner.nextLong();
 
         try {
-            et = em.getTransaction();
-            et.begin();
+            List<Rent> rents = em.createQuery("SELECT r FROM Rent r WHERE r.yachtId =:yachtId and r.rentedFrom >= :rentedFrom and r.rentedTo <= :rentedTo", Rent.class)
+                    .setParameter("yachtId", yachtId)
+                    .setParameter("rentedFrom", rentedFrom)
+                    .setParameter("rentedTo", rentedTo)
+                    .getResultList();
 
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Give rent id number:");
-            Long rentId = scanner.nextLong();
+            if (rents.isEmpty()) {
+                em.getTransaction().begin();
+                System.out.println("Give rent id number:");
+                Long rentId = scanner.nextLong();
+                rent = em.find(Rent.class, rentId);
 
-            rent = em.find(Rent.class, rentId);
-
-            System.out.println("New yacht id:");
-            Long newYachtId = scanner.nextLong();
-            rent.setYachtId(newYachtId);
-
-            System.out.println("Give rented year of rented from");
-            int year = scanner.nextInt();
-            System.out.println("Give rented month of rented from");
-            int month = scanner.nextInt();
-            System.out.println("Give rented day of rented from");
-            int day = scanner.nextInt();
-            rent.setRentedFrom(LocalDate.of(year, month, day));
-
-            System.out.println("Give rented year of rented to");
-            int year2 = scanner.nextInt();
-            System.out.println("Give rented month of rented to");
-            int month2 = scanner.nextInt();
-            System.out.println("Give rented day of rented to");
-            int day2 = scanner.nextInt();
-            rent.setRentedTo(LocalDate.of(year2, month2, day2));
-
-            int query = em.createQuery("SELECT r.rentId FROM Rent r WHERE r.yachtId =" + rent.getYachtId() + " and r.rentedFrom >= '"
-                    + rent.getRentedFrom() + "' and r.rentedTo <= ' " + rent.getRentedTo() + "'").getFirstResult();
-
-            if (query != 0) {
-                System.out.println("Term not available");
-                et.commit();
-                em.close();
-            } else
+                rent.setRentedFrom(localDate);
+                rent.setRentedTo(localDate2);
+                rent.setYachtId(yachtId);
 
                 em.persist(rent);
-            et.commit();
-            System.out.println("Changes saved");
+                em.getTransaction().commit();
+                System.out.println("Rent added");
+
+            } else {
+
+                RentService rentService = new RentService();
+                System.out.println("Deadline not available, give new parameters");
+                rentService.addRent();
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -152,13 +136,11 @@ public class RentService {
 
     public void deleteRent() {
         EntityTransaction et = null;
-        Rent rent = null;
 
         try {
             et = em.getTransaction();
             et.begin();
 
-            Scanner scanner = new Scanner(System.in);
             System.out.println("Give rent id number:");
             Long rentId = scanner.nextLong();
 

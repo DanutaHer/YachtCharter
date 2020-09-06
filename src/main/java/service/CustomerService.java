@@ -1,24 +1,27 @@
 package service;
 
 import entity.Customer;
+import util.PersistenceManager;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class CustomerService {
 
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("yachtcharter");
-
-    private EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+    EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
+    Customer customer = new Customer();
+    Scanner scanner = new Scanner(System.in);
+    EntityTransaction et = null;
+    Customer cust = null;
 
     public void addCustomer() {
 
         try {
             em.getTransaction().begin();
-            Customer customer = new Customer();
 
-            Scanner scanner = new Scanner(System.in);
             System.out.println("First and last name:");
             String name = scanner.nextLine();
             customer.setName(name);
@@ -44,11 +47,7 @@ public class CustomerService {
 
     public void getCustomer() {
 
-        EntityTransaction et = null;
-        Customer cust = null;
-
         try {
-            Scanner scanner = new Scanner(System.in);
             System.out.println("Give customer id number:");
             Long customerId = scanner.nextLong();
 
@@ -65,16 +64,23 @@ public class CustomerService {
         }
     }
 
-    public void editCustomer() {
+    public List<Customer> findCustomerByName(){
 
-        EntityTransaction et = null;
-        Customer cust = null;
+        String name = scanner.nextLine();
+
+        List<Customer> customers = em.createQuery("SELECT c FROM Customer as c WHERE name LIKE :name", Customer.class)
+                .setParameter("name", name)
+                .getResultList();
+
+        return customers;
+    }
+
+    public void editCustomer() {
 
         try {
             et = em.getTransaction();
             et.begin();
 
-            Scanner scanner = new Scanner(System.in);
             System.out.println("Give customer id number:");
             Long customerId = scanner.nextLong();
 
@@ -111,14 +117,11 @@ public class CustomerService {
     }
 
     public void deleteCustomer() {
-        EntityTransaction et = null;
-        Customer cust = null;
 
         try {
             et = em.getTransaction();
             et.begin();
 
-            Scanner scanner = new Scanner(System.in);
             System.out.println("Give customer id number:");
             Long customerId = scanner.nextLong();
 
