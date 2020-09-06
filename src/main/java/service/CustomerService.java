@@ -2,20 +2,17 @@ package service;
 
 import entity.Customer;
 import util.PersistenceManager;
-
 import javax.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class CustomerService {
 
-    EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
-    Customer customer = new Customer();
-    Scanner scanner = new Scanner(System.in);
-    EntityTransaction et = null;
-    Customer cust = null;
+    private EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
+    private Customer customer = new Customer();
+    private Scanner scanner = new Scanner(System.in);
+    private EntityTransaction et = null;
+    private Customer cust = null;
 
     public void addCustomer() {
 
@@ -75,6 +72,17 @@ public class CustomerService {
         return customers;
     }
 
+    public List<Customer> findCustomerByPhone(){
+
+        String phone = scanner.nextLine();
+
+        List<Customer> customers = em.createQuery("SELECT c FROM Customer as c WHERE phone LIKE :phone", Customer.class)
+                .setParameter("phone", phone)
+                .getResultList();
+
+        return customers;
+    }
+
     public void editCustomer() {
 
         try {
@@ -87,6 +95,7 @@ public class CustomerService {
             cust = em.find(Customer.class, customerId);
 
             System.out.println("New name:");
+            String newNam = scanner.nextLine();
             String newName = scanner.nextLine();
             cust.setName(newName);
 
@@ -129,6 +138,7 @@ public class CustomerService {
             em.remove(cust);
 
             et.commit();
+            System.out.println("Customer deletes");
         } catch (Exception ex) {
             if (et != null) {
                 et.rollback();

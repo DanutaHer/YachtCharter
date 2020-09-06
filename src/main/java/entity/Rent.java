@@ -1,6 +1,7 @@
 package entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -31,6 +32,9 @@ public class Rent {
 
     @Column(name = "rented_to")
     private LocalDate rentedTo;
+
+    @Column
+    private BigDecimal cost;
 
     public Long getRentId() {
         return rentId;
@@ -72,14 +76,21 @@ public class Rent {
         this.rentedTo = rentedTo;
     }
 
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
     @Override
     public String toString() {
-        return "Rent:" +
-                "rentId=" + rentId +
-                ", yachtId=" + yachtId +
-                ", customerId=" + customerId +
-                ", rentedFrom=" + rentedFrom +
-                ", rentedTo=" + rentedTo +
+        return "Rent number id:" + rentId +
+                ", yacht id =" + yachtId +
+                ", customer id = " + customerId +
+                ", rented date from " + rentedFrom +
+                " to " + rentedTo +
                 "";
     }
 }

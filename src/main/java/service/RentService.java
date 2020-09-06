@@ -1,20 +1,20 @@
 package service;
 
 import entity.Customer;
+import entity.Model;
 import entity.Rent;
 import util.PersistenceManager;
-
 import javax.persistence.*;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
-
 import java.util.*;
 
 public class RentService {
-    EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
-    Scanner scanner = new Scanner(System.in);
-    Rent rent = new Rent();
-    Customer customer = null;
+    private EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
+    private Scanner scanner = new Scanner(System.in);
+    private Rent rent = new Rent();
+    private Customer customer = null;
+    private Model model = new Model();
 
     public void addRent() {
 
@@ -26,6 +26,8 @@ public class RentService {
         LocalDate localDate2 = LocalDate.parse(rentedTo);
         System.out.println("Give yacht id");
         Long yachtId = scanner.nextLong();
+        System.out.println("Days: ");
+        BigDecimal days = scanner.nextBigDecimal();
 
         try {
 
@@ -48,6 +50,12 @@ public class RentService {
                 System.out.println(customer.getCustomerId() + ", " + customer.getName() + ", " + customer.getPhone() + ", " + customer.getEmail() + ", " + customer.getAddress());
                 rent.setCustomerId(customer.getCustomerId());
 
+
+                model = em.find(Model.class, yachtId);
+                BigDecimal cost = model.getPricePerDay();
+                BigDecimal endCost = cost.multiply(days);
+                System.out.println("Cost = " + endCost + " PLN");
+                rent.setCost(endCost);
                 em.persist(rent);
                 em.getTransaction().commit();
                 System.out.println("Rent added");
@@ -86,34 +94,61 @@ public class RentService {
         }
     }
 
+    public List<Rent> findRentByYachtId(Long yachtId){
+        List<Rent> rents = em.createQuery("SELECT r FROM Rent as r WHERE yachtId LIKE :yachtId", Rent.class)
+                .setParameter("yachtId", yachtId)
+                .getResultList();
+
+        return rents;
+    }
+
+    public List<Rent> findRentByRentedFrom(LocalDate rentedFrom){
+        List<Rent> rents = em.createQuery("SELECT r FROM Rent as r WHERE rentedFrom LIKE :rentedFrom", Rent.class)
+                .setParameter("rentedFrom", rentedFrom)
+                .getResultList();
+
+        return rents;
+    }
+
+    public List<Rent> findRentByRentedTo(LocalDate rentedTo){
+        List<Rent> rents = em.createQuery("SELECT r FROM Rent as r WHERE rentedFrom LIKE :rentedTo", Rent.class)
+                .setParameter("rentedTo", rentedTo)
+                .getResultList();
+
+        return rents;
+    }
     public void editRent() {
 
         EntityTransaction et = null;
 
+        em.getTransaction().begin();
+        System.out.println("Give rent id number:");
+        Long rentId = scanner.nextLong();
+        rent = em.find(Rent.class, rentId);
+        System.out.println("Your reservation: " + rent);
+        System.out.println("Find new reservation");
+
         System.out.println("Give rented from yyyy-mm-dd");
         String rentedFrom = scanner.nextLine();
-        LocalDate localDate = LocalDate.parse(rentedFrom);
+        String rentedFrom2 = scanner.nextLine();
+        LocalDate localDateFrom = LocalDate.parse(rentedFrom2);
         System.out.println("Give rented to yyyy-mm-dd");
         String rentedTo = scanner.nextLine();
-        LocalDate localDate2 = LocalDate.parse(rentedTo);
+        LocalDate localDateTo = LocalDate.parse(rentedTo);
         System.out.println("Give yacht id");
         Long yachtId = scanner.nextLong();
 
         try {
-            List<Rent> rents = em.createQuery("SELECT r FROM Rent r WHERE r.yachtId =:yachtId and r.rentedFrom >= :rentedFrom and r.rentedTo <= :rentedTo", Rent.class)
+            List<Rent> rents = em.createQuery("SELECT r FROM Rent r WHERE r.yachtId =:yachtId and r.rentedFrom >= :rentedFrom2 and r.rentedTo <= :rentedTo", Rent.class)
                     .setParameter("yachtId", yachtId)
-                    .setParameter("rentedFrom", rentedFrom)
-                    .setParameter("rentedTo", rentedTo)
+                    .setParameter("rentedFrom2", LocalDate.parse(rentedFrom2))
+                    .setParameter("rentedTo", LocalDate.parse(rentedTo))
                     .getResultList();
 
             if (rents.isEmpty()) {
-                em.getTransaction().begin();
-                System.out.println("Give rent id number:");
-                Long rentId = scanner.nextLong();
-                rent = em.find(Rent.class, rentId);
 
-                rent.setRentedFrom(localDate);
-                rent.setRentedTo(localDate2);
+                rent.setRentedFrom(localDateFrom);
+                rent.setRentedTo(localDateTo);
                 rent.setYachtId(yachtId);
 
                 em.persist(rent);
@@ -158,5 +193,27 @@ public class RentService {
         }
 
     }
+
+    private void costByDay(Long modelId){
+        EntityTransaction et = null;
+
+        try {
+            et = em.getTransaction();
+            et.begin();
+
+            model = em.find(Model.class, modelId);
+
+
+            et.commit();
+        } catch (Exception ex) {
+            if (et != null) {
+                et.rollback();
+            }
+            ex.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
+
 
 }

@@ -1,4 +1,5 @@
 import entity.Customer;
+import entity.Rent;
 import entity.Yacht;
 import org.hibernate.transform.RootEntityResultTransformer;
 import service.CustomerService;
@@ -6,6 +7,7 @@ import service.ModelService;
 import service.RentService;
 import service.YachtService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -172,7 +174,7 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("Will find a reservation");
-                    rentService.getRent();
+                    printMenuForRentsOperationsFindRents();
                     printMenu();
                     break;
                 case "3":
@@ -246,4 +248,66 @@ public class Main {
         }
     }
 
+    private static void printMenuForRentsOperationsFindRents() {
+        RentService rentService = new RentService();
+
+        System.out.println("=====================================");
+        System.out.println("Find rent:");
+        System.out.println("1 - by rent number id");
+        System.out.println("2 - by yacht id");
+        System.out.println("3 - by date rent from");
+        System.out.println("4 - by date rent to");
+        System.out.println("0 - to go back to the main menu");
+
+
+        if (scanner.hasNext()) {
+            switch (scanner.nextLine()) {
+                case "1":
+                    System.out.println("Give rent number id");
+                    rentService.getRent();
+                    printMenu();
+                    break;
+                case "2":
+                    System.out.println("Give yacht id");
+                    Long yachtId = scanner.nextLong();
+                    List<Rent> rents = rentService.findRentByYachtId(yachtId);
+                    System.out.println("I found " + rents.size() + " rents");
+                    for (Rent rent:rents) {
+                        System.out.println(rent.toString());
+                    }
+                    printMenu();
+                    break;
+                case "3":
+                    System.out.println("Give date rented from");
+                    String rentedFrom = scanner.nextLine();
+                    LocalDate localDate = LocalDate.parse(rentedFrom);
+                    List<Rent> rentByFrom = rentService.findRentByRentedFrom(localDate);
+                    System.out.println("I found " + rentByFrom.size() + " rents");
+                    for (Rent rent:rentByFrom) {
+                        System.out.println(rent.toString());
+                    }
+                    printMenu();
+                    break;
+                case "4":
+                    System.out.println("Give date rented to");
+                    String rentedTo = scanner.nextLine();
+                    LocalDate localDate2 = LocalDate.parse(rentedTo);
+                    List<Rent> rentByTo = rentService.findRentByRentedFrom(localDate2);
+                    System.out.println("I found " + rentByTo.size() + " rents");
+                    for (Rent rent:rentByTo) {
+                        System.out.println(rent.toString());
+                    }
+                    printMenu();
+                    break;
+                case "0":
+                    System.out.println("Going back");
+                    printMenu();
+                    break;
+                default:
+                    System.out.println("Choose a valid option!");
+                    printMenuForYachtOperations();
+                    break;
+            }
+        }
+    }
 }

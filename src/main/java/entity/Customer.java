@@ -1,6 +1,7 @@
 package entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Represents a model of a customer
@@ -31,6 +32,7 @@ public class Customer {
 
     @Column
     private String address;
+
 
     public Long getCustomerId() {
         return customerId;
@@ -74,12 +76,11 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer:" +
-                "customerId= " + customerId +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
+        return "Customer id:" + customerId +
+                ", name ='" + name + '\'' +
+                ", phone ='" + phone + '\'' +
+                ", email ='" + email + '\'' +
+                ", address ='" + address + '\'' +
                 "";
     }
 }
