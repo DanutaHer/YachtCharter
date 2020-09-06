@@ -1,6 +1,8 @@
+import entity.Customer;
 import entity.Yacht;
 import service.CustomerService;
 import service.ModelService;
+import service.RentService;
 import service.YachtService;
 
 import java.util.List;
@@ -105,6 +107,8 @@ public class Main {
     }
 
     private static void printMenuForCustomerOperations() {
+        CustomerService customerService = new CustomerService();
+
         System.out.println("=====================================");
         System.out.println("These are avaiable for a customer:");
         System.out.println("1 - to add a new customer");
@@ -113,7 +117,6 @@ public class Main {
         System.out.println("4 - to remove a customer because he did not sign RODO");
         System.out.println("0 - to go back to the main menu");
 
-        CustomerService customerService = new CustomerService();
 
         if (scanner.hasNext()) {
             switch (scanner.nextLine()) {
@@ -124,17 +127,16 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("Will display data for a chosen customer");
-                    // CustomerService.find();
-                    printMenu();
+                    printMenuForCustomerOperationsFindCustomer();
                     break;
                 case "3":
                     System.out.println("Will update a customer");
-                    // CustomerService.edit();
+                    customerService.editCustomer();
                     printMenu();
                     break;
                 case "4":
                     System.out.println("Will remove a customer");
-                    // CustomerService.delete();
+                    customerService.deleteCustomer();
                     printMenu();
                     break;
                 case "0":
@@ -150,6 +152,8 @@ public class Main {
     }
 
     private static void printMenuForRentOperations() {
+
+        RentService rentService = new RentService();
         System.out.println("========================");
         System.out.println("Are you looking for:");
         System.out.println("1 - to make a reservation");
@@ -162,22 +166,22 @@ public class Main {
             switch (scanner.nextLine()) {
                 case "1":
                     System.out.println("Will make a reservation");
-                    // RentService.add();
+                    rentService.addRent();
                     printMenu();
                     break;
                 case "2":
                     System.out.println("Will find a reservation");
-                    // RentService.find(); // by customer, by id, by yacht, by date....
+                    rentService.getRent();
                     printMenu();
                     break;
                 case "3":
                     System.out.println("Will change a reservation");
-                    // RentService.edit();
+                    rentService.editRent();
                     printMenu();
                     break;
                 case "4":
                     System.out.println("Will cancel a reservation");
-                    // RentService.delete();
+                    rentService.deleteRent();
                     printMenu();
                     break;
                 case "0":
@@ -191,6 +195,44 @@ public class Main {
             }
         }
 
+    }
+
+    private static void printMenuForCustomerOperationsFindCustomer() {
+        CustomerService customerService = new CustomerService();
+
+        System.out.println("=====================================");
+        System.out.println("Find customer:");
+        System.out.println("1 - by number id");
+        System.out.println("2 - by name");
+        System.out.println("0 - to go back to the main menu");
+
+
+        if (scanner.hasNext()) {
+            switch (scanner.nextLine()) {
+                case "1":
+                    System.out.println("Give customer number id");
+                    customerService.getCustomer();
+                    printMenu();
+                    break;
+                case "2":
+                    System.out.println("Give customer name");
+                    List<Customer> customers = customerService.findCustomerByName();
+                    System.out.println("I found " + customers.size() + " customers");
+                    for (Customer cust:customers) {
+                        System.out.println(cust.toString());
+                    }
+                    printMenu();
+                    break;
+                case "0":
+                    System.out.println("Going back");
+                    printMenu();
+                    break;
+                default:
+                    System.out.println("Choose a valid option!");
+                    printMenuForYachtOperations();
+                    break;
+            }
+        }
     }
 
 }
