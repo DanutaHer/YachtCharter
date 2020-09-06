@@ -50,7 +50,7 @@ public class RentService {
                 System.out.println(customer.getCustomerId() + ", " + customer.getName() + ", " + customer.getPhone() + ", " + customer.getEmail() + ", " + customer.getAddress());
                 rent.setCustomerId(customer.getCustomerId());
 
-                Long costDays = ChronoUnit.DAYS.between(localDate2, localDate);
+                Long costDays = ChronoUnit.DAYS.between(localDate, localDate2);
                 model = em.find(Model.class, yachtId);
                 BigDecimal cost = model.getPricePerDay();
                 BigDecimal endCost = cost.multiply(BigDecimal.valueOf(costDays));
@@ -151,7 +151,7 @@ public class RentService {
                 rent.setRentedTo(localDateTo);
                 rent.setYachtId(yachtId);
 
-                Long costDays = ChronoUnit.DAYS.between(localDateTo, localDateFrom);
+                Long costDays = ChronoUnit.DAYS.between(localDateFrom, localDateTo);
                 model = em.find(Model.class, yachtId);
                 BigDecimal cost = model.getPricePerDay();
                 BigDecimal endCost = cost.multiply(BigDecimal.valueOf(costDays));
@@ -209,7 +209,6 @@ public class RentService {
             et.begin();
 
             model = em.find(Model.class, modelId);
-
 
             et.commit();
         } catch (Exception ex) {
