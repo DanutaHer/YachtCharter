@@ -1,5 +1,6 @@
 import entity.Customer;
 import entity.Yacht;
+import org.hibernate.transform.RootEntityResultTransformer;
 import service.CustomerService;
 import service.ModelService;
 import service.RentService;
@@ -204,6 +205,7 @@ public class Main {
         System.out.println("Find customer:");
         System.out.println("1 - by number id");
         System.out.println("2 - by name");
+        System.out.println("3 - by phone");
         System.out.println("0 - to go back to the main menu");
 
 
@@ -219,6 +221,15 @@ public class Main {
                     List<Customer> customers = customerService.findCustomerByName();
                     System.out.println("I found " + customers.size() + " customers");
                     for (Customer cust:customers) {
+                        System.out.println(cust.toString());
+                    }
+                    printMenu();
+                    break;
+                case "3":
+                    System.out.println("Give customer phone");
+                    List<Customer> customersPhone = customerService.findCustomerByPhone();
+                    System.out.println("I found " + customersPhone.size() + " customers");
+                    for (Customer cust:customersPhone) {
                         System.out.println(cust.toString());
                     }
                     printMenu();
