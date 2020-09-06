@@ -26,8 +26,6 @@ public class RentService {
         LocalDate localDate2 = LocalDate.parse(rentedTo);
         System.out.println("Give yacht id");
         Long yachtId = scanner.nextLong();
-        System.out.println("Days: ");
-        BigDecimal days = scanner.nextBigDecimal();
 
         try {
 
@@ -44,6 +42,8 @@ public class RentService {
                 rent.setRentedTo(localDate2);
                 rent.setYachtId(yachtId);
 
+                System.out.println("Days: ");
+                BigDecimal days = scanner.nextBigDecimal();
                 System.out.println("Give customer id");
                 Long customerId = scanner.nextLong();
                 customer = em.find(Customer.class, customerId);
