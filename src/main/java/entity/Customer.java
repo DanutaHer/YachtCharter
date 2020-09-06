@@ -72,5 +72,15 @@ public class Customer {
         this.address = address;
     }
 
+    @Override
+    public String toString() {
+        return "Customer:" +
+                "customerId= " + customerId +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                "";
+    }
 }
 

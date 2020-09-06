@@ -71,4 +71,15 @@ public class Rent {
     public void setRentedTo(LocalDate rentedTo) {
         this.rentedTo = rentedTo;
     }
+
+    @Override
+    public String toString() {
+        return "Rent:" +
+                "rentId=" + rentId +
+                ", yachtId=" + yachtId +
+                ", customerId=" + customerId +
+                ", rentedFrom=" + rentedFrom +
+                ", rentedTo=" + rentedTo +
+                "";
+    }
 }
