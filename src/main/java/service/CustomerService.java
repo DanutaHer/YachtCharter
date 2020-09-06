@@ -6,6 +6,12 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Represents customer service
+ *
+ * @author Danuta Hering
+ */
+
 public class CustomerService {
 
     private EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();

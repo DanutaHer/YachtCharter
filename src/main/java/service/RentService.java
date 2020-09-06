@@ -10,6 +10,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+/**
+ * Represents rent service
+ *
+ * @author Danuta Hering
+ */
+
 public class RentService {
     private EntityManager em = PersistenceManager.getInstance().getEntityManagerFactory().createEntityManager();
     private Scanner scanner = new Scanner(System.in);
@@ -42,7 +48,6 @@ public class RentService {
                 rent.setRentedFrom(localDate);
                 rent.setRentedTo(localDate2);
                 rent.setYachtId(yachtId);
-
 
                 System.out.println("Give customer id");
                 Long customerId = scanner.nextLong();
