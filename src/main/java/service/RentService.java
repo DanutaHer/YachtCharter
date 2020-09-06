@@ -7,6 +7,7 @@ import util.PersistenceManager;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class RentService {
@@ -42,18 +43,17 @@ public class RentService {
                 rent.setRentedTo(localDate2);
                 rent.setYachtId(yachtId);
 
-                System.out.println("Days: ");
-                BigDecimal days = scanner.nextBigDecimal();
+
                 System.out.println("Give customer id");
                 Long customerId = scanner.nextLong();
                 customer = em.find(Customer.class, customerId);
                 System.out.println(customer.getCustomerId() + ", " + customer.getName() + ", " + customer.getPhone() + ", " + customer.getEmail() + ", " + customer.getAddress());
                 rent.setCustomerId(customer.getCustomerId());
 
-
+                Long costDays = ChronoUnit.DAYS.between(localDate2, localDate);
                 model = em.find(Model.class, yachtId);
                 BigDecimal cost = model.getPricePerDay();
-                BigDecimal endCost = cost.multiply(days);
+                BigDecimal endCost = cost.multiply(BigDecimal.valueOf(costDays));
                 System.out.println("Cost = " + endCost + " PLN");
                 rent.setCost(endCost);
                 em.persist(rent);
@@ -150,6 +150,13 @@ public class RentService {
                 rent.setRentedFrom(localDateFrom);
                 rent.setRentedTo(localDateTo);
                 rent.setYachtId(yachtId);
+
+                Long costDays = ChronoUnit.DAYS.between(localDateTo, localDateFrom);
+                model = em.find(Model.class, yachtId);
+                BigDecimal cost = model.getPricePerDay();
+                BigDecimal endCost = cost.multiply(BigDecimal.valueOf(costDays));
+                System.out.println("Cost = " + endCost + " PLN");
+                rent.setCost(endCost);
 
                 em.persist(rent);
                 em.getTransaction().commit();
